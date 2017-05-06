@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -32,6 +33,13 @@ namespace OwinSelfHostAutofacNTLM
                 this._logger.Write("This is not 'WindowsPrincipal'");
             }
 
+            WindowsIdentity identity = (WindowsIdentity)Thread.CurrentPrincipal.Identity;
+            using (WindowsImpersonationContext context = identity.Impersonate())
+            {
+                // Do something... 
+
+                context.Undo();
+            }
             return "Hello, world!";
         }
     }
